@@ -32,6 +32,7 @@ class TaskResponse(BaseModel):
     completed: bool
     due_date: Optional[datetime] = None
     priority: int
+    owner: UserResponse
 
     class Config:
         from_attributes = True

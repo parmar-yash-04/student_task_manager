@@ -10,7 +10,7 @@ router = APIRouter(prefix="/tasks", tags=["Tasks"])
 
 @router.get("/", response_model=List[TaskResponse])
 def get_all_tasks(db: Session = Depends(get_db), current_user: Task = Depends(get_current_user)):
-    tasks = db.query(Task).all()
+    tasks = db.query(Task).filter(Task.owner_id == current_user.id).all()
     return tasks
 
 @router.post("/create", response_model=TaskResponse)
@@ -40,6 +40,12 @@ def delete_task(task_id: int, db: Session = Depends(get_db), current_user: Task 
     task = db.query(Task).filter(Task.id == task_id).first()
     if not task:
         raise HTTPException(status_code=404, detail="Task not found")
+    
+    if current_user.id != task.owner_id:
+        raise HTTPException(
+            status_code=403,
+            detail="it's not your account task, you can't delete this task"
+        )
     db.delete(task)
     db.commit()
     return {"message": "Task deleted successfully"}
@@ -50,8 +56,8 @@ def update_task(task_id: int, task_update: TaskUpdate, db: Session = Depends(get
     if not task:
         raise HTTPException(status_code=404, detail="Task not found")
     
-    if not task.owner_id == current_user.id:
-        raise HTTPException(status_code=403, detail="Not allowed")
+    if current_user.id != task.owner_id:
+        raise HTTPException(status_code=403, detail="it's not your account task, you can't update this task")
 
     update_data = task_update.dict(exclude_unset=True)
 
