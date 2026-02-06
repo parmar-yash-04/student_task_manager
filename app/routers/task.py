@@ -4,13 +4,14 @@ from sqlalchemy.orm import Session
 from app.database import get_db
 from app.schemas import TaskCreate, TaskResponse, TaskUpdate
 from app.models import Task
-from typing import List
+from typing import List, Optional
 
 router = APIRouter(prefix="/tasks", tags=["Tasks"])
 
 @router.get("/", response_model=List[TaskResponse])
-def get_all_tasks(db: Session = Depends(get_db), current_user: Task = Depends(get_current_user)):
-    tasks = db.query(Task).filter(Task.owner_id == current_user.id).all()
+def get_all_tasks(db: Session = Depends(get_db), current_user: Task = Depends(get_current_user), limit: int =10,
+                  skip: int =0, search: Optional[str] =""):
+    tasks = db.query(Task).filter(Task.owner_id == current_user.id,Task.title.contains(search)).limit(limit).offset(skip).all()
     return tasks
 
 @router.post("/create", response_model=TaskResponse)
