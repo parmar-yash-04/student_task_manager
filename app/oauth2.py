@@ -12,7 +12,6 @@ SECRET_KEY = "0987654321abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
-
 def create_access_token(data: dict):
     to_encode = data.copy()
     expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
