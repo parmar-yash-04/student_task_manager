@@ -22,6 +22,6 @@ app.add_middleware(
 def main():
     return {"message": "Hello World"}
 
-app.include_router(auth.router)
 app.include_router(user.router)
+app.include_router(auth.router)
 app.include_router(task.router)
