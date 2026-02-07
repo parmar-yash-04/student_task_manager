@@ -8,7 +8,7 @@ from app import oauth2
 
 router = APIRouter(prefix="/users", tags=["Users"])
 
-@router.post("/create", response_model=UserResponse)
+@router.post("/create", response_model=UserResponse, status_code=201)
 def create_user(user: UserCreate, db: Session = Depends(get_db)):
     
     existing_user = db.query(User).filter(User.email == user.email).first()
