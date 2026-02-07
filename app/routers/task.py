@@ -14,7 +14,7 @@ def get_all_tasks(db: Session = Depends(get_db), current_user: Task = Depends(ge
     tasks = db.query(Task).filter(Task.owner_id == current_user.id,Task.title.contains(search)).limit(limit).offset(skip).all()
     return tasks
 
-@router.post("/create", response_model=TaskResponse)
+@router.post("/create", response_model=TaskResponse, status_code=201)
 def create_task(task: TaskCreate, db: Session = Depends(get_db), current_user: Task = Depends(get_current_user)):
     new_task = Task(
         title=task.title,
@@ -51,7 +51,7 @@ def delete_task(task_id: int, db: Session = Depends(get_db), current_user: Task 
     db.commit()
     return {"message": "Task deleted successfully"}
 
-@router.put("/{task_id}", response_model=TaskResponse)
+@router.put("/{task_id}", response_model=TaskResponse, status_code=201)
 def update_task(task_id: int, task_update: TaskUpdate, db: Session = Depends(get_db), current_user: Task = Depends(get_current_user)):
     task = db.query(Task).filter(Task.id == task_id).first()
     if not task:
