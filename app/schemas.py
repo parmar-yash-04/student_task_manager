@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, EmailStr, Field, ConfigDict
 from typing import Optional
 from datetime import datetime
 
@@ -15,8 +15,7 @@ class UserResponse(BaseModel):
     full_name: str
     is_active: bool
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 class TaskCreate(BaseModel):
     title: str
@@ -34,8 +33,7 @@ class TaskResponse(BaseModel):
     priority: int
     owner: UserResponse
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 class TaskUpdate(BaseModel):
     title: Optional[str] = None
