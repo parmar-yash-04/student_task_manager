@@ -27,10 +27,10 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)):
     db.refresh(new_user)
     return new_user
 
-@router.get("/", response_model=list[UserResponse])
-def get_all_users(db: Session = Depends(get_db), current_user: User = Depends(oauth2.get_current_user)):
-    users = db.query(User).all()
-    return users
+# @router.get("/", response_model=list[UserResponse])
+# def get_all_users(db: Session = Depends(get_db), current_user: User = Depends(oauth2.get_current_user)):
+#     users = db.query(User).all()
+#     return users
 
 @router.delete("/{user_id}")
 def delete_user(user_id: int, db: Session = Depends(get_db), current_user: User = Depends(oauth2.get_current_user)):
