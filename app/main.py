@@ -20,7 +20,7 @@ app.add_middleware(
 
 @app.get("/")
 def main():
-    return {"message": "Hello World"}
+    return {"message": "Welcome to the Task Management API!"}
 
 app.include_router(user.router)
 app.include_router(auth.router)
