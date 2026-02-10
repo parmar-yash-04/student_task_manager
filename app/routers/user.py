@@ -46,3 +46,25 @@ def delete_user(user_id: int, db: Session = Depends(get_db), current_user: User 
     db.delete(user)
     db.commit()
     return {"message": "User deleted successfully"}
+
+@router.put("/{user_id}", response_model=UserResponse, status_code=201)
+def update_user(user_id: int, user_update: UserCreate, db: Session = Depends(get_db), current_user: User = Depends(oauth2.get_current_user)):
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+    
+    if current_user.id != user_id:
+        raise HTTPException(
+            status_code=403,
+            detail="you can't update this user"
+        )
+    
+    user.email = user_update.email
+    user.username = user_update.username
+    user.full_name = user_update.full_name
+    if user_update.password:
+        user.hashed_password = hash_password(user_update.password)
+    
+    db.commit()
+    db.refresh(user)
+    return user
